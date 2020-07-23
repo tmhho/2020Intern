@@ -4,7 +4,7 @@ import time
 import sys
 import os
 
-nreps = 500_000
+nreps = 500000
 k = [ 
     4,
     6,
@@ -18,7 +18,8 @@ k = [
 
 migration_rates = [0.1
 , 1.0
-, 10.0]
+# , 10.0
+]
 type_sampling = sys.argv[1]
 def sampling_scheme (total_samples, type):
     if type == 'half-half':
@@ -36,10 +37,11 @@ num_islands = 10
 deme_size = 1.0
 omega = 1.25
 
-runtime_ms = []
-runtime_qmd = []
+
 afs_runtimes = [['samples_size']+k]
 for migration_rate in migration_rates:
+  runtime_ms = []
+  runtime_qmd = []
   for total_samples in k:
       sampling = sampling_scheme(total_samples,type_sampling)
       print(f'sampling:', sampling)
@@ -52,7 +54,8 @@ for migration_rate in migration_rates:
 
       # measure qmd runtime
       start_time = time.time()
-      qmd_afs = afstools.expected_nisland_afs(sampling, num_islands, migration_rate, deme_size, omega)
+      qmd_afs = afstools.expected_nisland_afs(sampling, 
+        num_islands, migration_rate, deme_size, omega)
       runtime_qmd.append(time.time() - start_time)
 
   afs_runtimes.append([f'ms_runtime_M{migration_rate}']  + runtime_ms) 
