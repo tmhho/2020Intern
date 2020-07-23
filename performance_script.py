@@ -16,21 +16,29 @@ k = [
     # 18
 ]
 
-migration_rates = [0.1
-, 1.0
-, 10.0]
-type_sampling = sys.argv[1]
+migration_rates = [
+    0.1,
+    1.0,
+    10.0
+]
+
 def sampling_scheme (total_samples, type):
+    if total_samples % 2 != 0:
+        raise "Error: not an even number of samples!"
+
     if type == 'half-half':
-        if total_samples % 2 == 0:
-            return [total_samples/2]*2
-        else:
-            raise "Not even nunmber of samples in island"
+        from math import ceil, floor
+        return [2 * ceil(total_samples / 4), 2 * floor(total_samples / 4)]
+
     if type == 'concentrated':
         return [total_samples]
-    if type == 'spread':
-        return [2]*int((total_samples/2))
 
+    if type == 'spread':
+        return [2] * int(total_samples / 2)
+
+    raise "Error: Unknown sampling type!"
+
+type_sampling = sys.argv[1]
 mutation_rate = 0.1
 num_islands = 10
 deme_size = 1.0
@@ -38,10 +46,10 @@ omega = 1.25
 
 runtime_ms = []
 runtime_qmd = []
-afs_runtimes = [['samples_size']+k]
+afs_runtimes = [['samples_size'] + k]
 for migration_rate in migration_rates:
   for total_samples in k:
-      sampling = sampling_scheme(total_samples,type_sampling)
+      sampling = sampling_scheme(total_samples, type_sampling)
       print(f'sampling:', sampling)
 
       # measure ms runtime
