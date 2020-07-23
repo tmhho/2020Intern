@@ -22,22 +22,6 @@ migration_rates = [
     10.0
 ]
 
-def sampling_scheme (total_samples, type):
-    if total_samples % 2 != 0:
-        raise "Error: not an even number of samples!"
-
-    if type == 'half-half':
-        from math import ceil, floor
-        return [2 * ceil(total_samples / 4), 2 * floor(total_samples / 4)]
-
-    if type == 'concentrated':
-        return [total_samples]
-
-    if type == 'spread':
-        return [2] * int(total_samples / 2)
-
-    raise "Error: Unknown sampling type!"
-
 type_sampling = sys.argv[1]
 mutation_rate = 0.1
 num_islands = 10
@@ -49,7 +33,7 @@ runtime_qmd = []
 afs_runtimes = [['samples_size'] + k]
 for migration_rate in migration_rates:
   for total_samples in k:
-      sampling = sampling_scheme(total_samples, type_sampling)
+      sampling = afstools.sampling_scheme(total_samples, type_sampling)
       print(f'sampling:', sampling)
 
       # measure ms runtime
