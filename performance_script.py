@@ -16,7 +16,21 @@ k = [
     # 18
 ]
 
-migration_rate = float(sys.argv[1])
+migration_rates = [0.1
+, 1.0
+, 10.0]
+type_sampling = sys.argv[1]
+def sampling_scheme (total_samples, type):
+    if type == 'half-half':
+        if total_samples % 2 == 0:
+            return [total_samples/2]*2
+        else:
+            raise "Not even nunmber of samples in island"
+    if type == 'concentrated':
+        return [total_samples]
+    if type == 'spread':
+        return [2]*int((total_samples/2))
+
 mutation_rate = 0.1
 num_islands = 10
 deme_size = 1.0
@@ -24,26 +38,27 @@ omega = 1.25
 
 runtime_ms = []
 runtime_qmd = []
-for total_samples in k:
-    sampling = [total_samples]
-    print(f'sampling:', sampling)
+afs_runtimes = [['samples_size']+k]
+for migration_rate in migration_rates:
+  for total_samples in k:
+      sampling = sampling_scheme(total_samples,type_sampling)
+      print(f'sampling:', sampling)
 
-    # measure ms runtime
-    start_time = time.time()
-    ms_afs = ms2afs.get_nisland_afs(num_islands, migration_rate, sampling, mutation_rate, 10 * nreps, nreps)
-    runtime_ms.append(time.time() - start_time)
+      # measure ms runtime
+      start_time = time.time()
+      ms_afs = ms2afs.get_nisland_afs(num_islands, migration_rate, sampling, 
+          mutation_rate, 10 * nreps, nreps)
+      runtime_ms.append(time.time() - start_time)
 
-    # measure qmd runtime
-    start_time = time.time()
-    qmd_afs = afstools.expected_nisland_afs(sampling, num_islands, migration_rate, deme_size, omega)
-    runtime_qmd.append(time.time() - start_time)
+      # measure qmd runtime
+      start_time = time.time()
+      qmd_afs = afstools.expected_nisland_afs(sampling, num_islands, migration_rate, deme_size, omega)
+      runtime_qmd.append(time.time() - start_time)
 
-afs_runtimes = [
-    ['samples_size'] + k,
-    ['ms_runtime']  + runtime_ms,
-    ['qmd_runtime'] + runtime_qmd
-]
+  afs_runtimes.append([f'ms_runtime_M{migration_rate}']  + runtime_ms) 
+  afs_runtimes.append([f'qmd_runtime_M{migration_rate}'] + runtime_qmd)
+
 afs_runtimes = afstools.transposed(afs_runtimes)
 
-output_filename = os.path.join('csv-files', f'afs_runtimes_M{migration_rate}_n{num_islands}_w{omega}.csv')
+output_filename = os.path.join('csv-files', f'afs_runtimes_n={num_islands}_w={omega}_sampling={type_sampling}.csv')
 afstools.write_csv(afs_runtimes, output_filename, ',')
