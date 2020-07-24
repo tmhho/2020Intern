@@ -2,7 +2,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import glob
 import sys
-
+import os
 # filenames = glob.glob('afs_runtimes_n*')
 # M = [float(name.split('_')[2].split('=')[1]) for name in filenames]
 
@@ -16,7 +16,8 @@ import sys
 # for file in filenames :
 #     data.append([pd.read_csv(file)])
 sampling_type = sys.argv[1]
-data = pd.read_csv('afs_runtimes_n=10_w=1.25_sampling={}.csv'.format(sampling_type))
+filename = os.path.join('csv-files','afs_runtimes_n=10_w=1.25_sampling={}.csv'.format(sampling_type))
+data = pd.read_csv(filename)
 
 fig = go.Figure()
 M = [0.1,1.0,10.0]
