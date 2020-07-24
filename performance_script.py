@@ -18,19 +18,19 @@ k = [
 
 migration_rates = [0.1
 , 1.0
-# , 10.0
+, 10.0
 ]
 type_sampling = sys.argv[1]
 def sampling_scheme (total_samples, type):
     if type == 'half-half':
         if total_samples % 2 == 0:
-            return [total_samples/2]*2
+            return [total_samples//2]*2
         else:
-            raise "Not even nunmber of samples in island"
+            return [total_samples//2+1, total_samples//2-1]
     if type == 'concentrated':
         return [total_samples]
     if type == 'spread':
-        return [2]*int((total_samples/2))
+        return [2]*int((total_samples//2))
 
 mutation_rate = 0.1
 num_islands = 10
@@ -44,7 +44,7 @@ for migration_rate in migration_rates:
   runtime_qmd = []
   for total_samples in k:
       sampling = sampling_scheme(total_samples,type_sampling)
-      print(f'sampling:', sampling)
+      print('sampling:{}'.format(sampling))
 
       # measure ms runtime
       start_time = time.time()

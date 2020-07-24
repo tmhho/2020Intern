@@ -47,3 +47,14 @@ def expected_nisland_afs(samples, islands, migration, deme = 1.0, omega = 1.25):
     line = next(execute(qmd_cmd)).strip()[1:-1]
     afs = [float(x) for x in line.split(',')]
     return afs
+
+def sampling_scheme (total_samples, type):
+    if type == 'half-half':
+        if total_samples % 2 == 0:
+            return [total_samples/2]*2
+        else:
+            raise "Not even nunmber of samples in island"
+    if type == 'concentrated':
+        return [total_samples]
+    if type == 'spread':
+        return [2]*int((total_samples/2))
