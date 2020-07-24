@@ -28,8 +28,6 @@ num_islands = 10
 deme_size = 1.0
 omega = 1.25
 
-runtime_ms = []
-runtime_qmd = []
 afs_runtimes = [['samples_size'] + k]
 for migration_rate in migration_rates:
   runtime_ms = []
