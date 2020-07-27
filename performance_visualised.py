@@ -1,4 +1,5 @@
 import pandas as pd
+import plotly.io as pio
 import plotly.graph_objects as go
 import glob
 import sys
@@ -41,4 +42,8 @@ fig.update_layout(
     yaxis_title='runtime',
     yaxis_type='log' 
 )
-fig.show()
+#fig.show()
+if not os.path.exists('graphs'):
+    os.mkdir('graphs')
+path = os.path.join('graphs', 'Performance:nreps=500000_10i_sampling_type={}'.format(sampling_type))
+pio.write_image(fig , path, 'png')

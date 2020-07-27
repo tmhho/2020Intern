@@ -2,15 +2,15 @@ import pandas as pd
 import plotly.graph_objects as go
 import glob
 import sys
-
-filenames = glob.glob('afs_runtimes_n=10_w=1.25_sampling=*')
+import os
+import plotly.io as pio
+filenames = os.path.join('csv-files','afs_runtimes_n=10_w=1.25_sampling=*')
+filenames = glob.glob(filenames)
 print(filenames)
-sampling_schemes = [(name.split('_')[4].split('=')[1].split('.')[0]) for name in filenames]
-
-
 data = []
-
-for file in filenames :
+sampling_schemes = []
+for file in filenames:
+    sampling_schemes += [file.split('_')[4].split('=')[1].split('.')[0]]
     data.append([pd.read_csv(file)])
 
 fig = go.Figure()
@@ -30,4 +30,8 @@ fig.update_layout(
     yaxis_title='runtime',
     yaxis_type='log' 
 )
-fig.show()
+if not os.path.exists('graphs'):
+    os.mkdir('graphs')
+path = os.path.join('graphs', 'Comparison of runtime:10i_k=8_500000reps_M1.0')
+pio.write_image(fig , path, 'png')
+# fig.show()

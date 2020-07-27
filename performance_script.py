@@ -16,7 +16,6 @@ k = [
     # 18
 ]
 
-
 migration_rates = [0.1
 , 1.0
 , 10.0
@@ -24,7 +23,7 @@ migration_rates = [0.1
 type_sampling = sys.argv[1]
 def sampling_scheme (total_samples, type):
     if type == 'half-half':
-        if total_samples % 2 == 0:
+        if (total_samples // 2)%2 == 0:
             return [total_samples//2]*2
         else:
             return [total_samples//2+1, total_samples//2-1]
@@ -33,20 +32,17 @@ def sampling_scheme (total_samples, type):
     if type == 'spread':
         return [2]*int((total_samples//2))
 
-
-
-type_sampling = sys.argv[1]
 mutation_rate = 0.1
 num_islands = 10
 deme_size = 1.0
 omega = 1.25
 
-afs_runtimes = [['samples_size'] + k]
+
+afs_runtimes = [['samples_size']+k]
 for migration_rate in migration_rates:
   runtime_ms = []
   runtime_qmd = []
   for total_samples in k:
-
       sampling = sampling_scheme(total_samples,type_sampling)
       print('sampling:{}'.format(sampling))
 

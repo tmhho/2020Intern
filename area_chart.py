@@ -1,34 +1,26 @@
 import plotly.graph_objects as go
 import pandas as pd
 import glob
+import sys
+import plotly.io as pio
+import os
 
-filenames = glob.glob('afs_values_k=6_M*')
-filenames.sort()
-M = [float(name.split('_')[3].split('=')[1]) for name in filenames]
+total_samples = int(sys.argv[1])
+sampling_scheme = sys.argv[2]
+filename = os.path.join('csv-files','afs_values_k={}_10i_sampling={}.csv'.format(total_samples,sampling_scheme))
 
-# combined_csv = pd.concat( [ pd.read_csv(f) for f in filenames ], sort=False )
-# combined_csv.to_csv( "validation.csv", index=False )
+list_M = [0.1, 1.0, 10.0]
 
-###################TRANPOSE CSV FILE###########################
-# for file in filenames: 
-#     pd.read_csv(file, header=None).T.to_csv( 'transposed.{}'.format(file), header=False, index=False)
-
-# transposed_filenames = glob.glob('transposed.afs_values_k=6_M*')
-
-data = []
-for file in filenames :
-    data.append([pd.read_csv(file)])
+data = pd.read_csv(filename)
 
 list_c=[]
-k = len(data[1][0]['observed 1000000'])
-
-for i in range(k):
-    c = [afs[0]['observed 1000000'][i] for afs in data]
+for i in range(0,total_samples-1):
+    c = [data['observed_afs_M{}_nreps1000000'.format(M)][i] for M in list_M]
     list_c.append(c)
 fig = go.Figure()
 for i in range(len(list_c)):
         fig.add_trace(go.Scatter(
-    x=M, y=list_c[i],
+    x=list_M, y=list_c[i],
     hoverinfo='x+y',
     mode='lines',
     line=dict(width=0.5
@@ -37,40 +29,12 @@ for i in range(len(list_c)):
     stackgroup='one',
     name = 'c{}'.format(i+1)# define stack group
 ))
-# fig.add_trace(go.Scatter(
-#     x=x, y=v[1],
-#     hoverinfo='x+y',
-#     mode='lines',
-#     line=dict(width=0.5, color='rgb(111, 231, 219)'),
-#     stackgroup='one',
-#     name='c2'
-# ))
-# fig.add_trace(go.Scatter(
-#     x=x, y=v[2],
-#     hoverinfo='x+y',
-#     mode='lines',
-#     line=dict(width=0.5, color='rgb(184, 247, 212)'),
-#     stackgroup='one',
-#     name='c3'
-# ))
-# fig.add_trace(go.Scatter(
-#     x=x, y=v[3],
-#     hoverinfo='x+y',
-#     mode='lines',
-#     line=dict(width=0.5, color='rgb(183, 132, 167)'),
-#     stackgroup='one',
-#     name='c4'
-# ))
-# fig.add_trace(go.Scatter(
-#     x=x, y=v[4],
-#     hoverinfo='x+y',
-#     mode='lines',
-#     line=dict(width=0.5, color='rgb(252, 190, 17)'),
-#     stackgroup='one',
-#     name='c5'
-# ))
-
-fig.update_layout(title='Afs, k=6, nislands=10', xaxis_type='log', xaxis_title='M')
 
 
-fig.show()
+fig.update_layout(title='Afs, k={}, nislands=10, sampling_scheme={}'.format(total_samples,sampling_scheme), xaxis_type='log', xaxis_title='M')
+if not os.path.exists('graphs'):
+    os.mkdir('graphs')
+path = os.path.join('graphs', 'Area_Chart:nreps=1000000_10i_sampling_type={}_k={}'.format(sampling_scheme,total_samples))
+pio.write_image(fig , path, 'png')
+
+# fig.show()
