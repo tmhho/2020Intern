@@ -53,12 +53,17 @@ def expected_nisland_afs(samples, islands, migration, deme = 1.0, omega = 1.25):
     return afs
 
 def sampling_scheme (total_samples, type):
+    if total_samples % 2 != 0:
+        raise 'Error: not an even number of samples'
+
     if type == 'half-half':
-        if total_samples % 2 == 0:
-            return [total_samples/2]*2
-        else:
-            raise "Not even nunmber of samples in island"
+        from math import ceil, floor
+        return [2 * ceil(total_samples / 4), 2 * floor(total_samples / 4)]
+    
     if type == 'concentrated':
         return [total_samples]
+
     if type == 'spread':
-        return [2]*int((total_samples/2))
+        return [2] * int(total_samples / 2)
+    
+    raise f'Error: type argument not recognized: {type}'
