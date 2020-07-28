@@ -28,6 +28,10 @@ def execute(cmd):
 	if return_code:
 		raise subprocess.CalledProcessError(return_code, cmd)
 
+def normalized(afs):
+    total = int(sum(afs))
+    return ([float(xi) / total for xi in afs], total)
+
 def expected_panmictic_afs(samples):
     afs = [1 / xi for xi in range(1, samples)]
     total = sum(afs)
