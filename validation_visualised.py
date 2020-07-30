@@ -32,7 +32,7 @@ for i in range(len(M)):
 fig.update_layout(
 	title='Validation: nislands=10 k={} sampling_vector = {}'.format(total_sample,sampling_scheme),
 	xaxis_title='num_segsites',
-	yaxis_title='abs_error', 
+	yaxis_title='average_abs_error', 
 	xaxis_type='log',
 	yaxis_type='log')
 fig.show()
