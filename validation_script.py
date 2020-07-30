@@ -88,7 +88,8 @@ for migration_rate in migration_rates:
     print(f'afs_distances: {afs_distances}')
 afs_distances = afstools.transposed(afs_distances)
 afs_table = afstools.transposed(afs_table)
-output_afs_distances = os.path.join('csv-files', f'afs_errors_k={total_samples}_10i_sampling={sampling_type}_omega=1.25_theta=0.1.csv')
-output_afs_table = os.path.join('csv-files', f'afs_values_k={total_samples}_10i_sampling={sampling_type}_omega=1.25_theta=0.1.csv')
+version = sys.argv[3]
+output_afs_distances = os.path.join('csv-files', f'afs_errors_k={total_samples}_10i_sampling={sampling_type}_omega=1.25_theta=0.1_{version}.csv')
+output_afs_table = os.path.join('csv-files', f'afs_values_k={total_samples}_10i_sampling={sampling_type}_omega=1.25_theta=0.1_{version}.csv')
 afstools.write_csv(afs_table, output_afs_table, ',')
 afstools.write_csv(afs_distances, output_afs_distances,',')
