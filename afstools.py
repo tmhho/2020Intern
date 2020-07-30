@@ -14,6 +14,10 @@ def absolute_error(x, y):
     k = len(x)
     return sum(abs(x[i] - y[i]) for i in range(k))
 
+def average_absolute_error(x,y):
+    k = len(x)
+    return sum(abs(x[i] - y[i]) for i in range(k))/(k-1)
+
 def relative_error(x, y):
     k = len(x)
     return sum(abs(1 - x[i] / y[i]) for i in range(k))

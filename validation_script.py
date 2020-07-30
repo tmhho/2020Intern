@@ -31,7 +31,7 @@ list_nsegsites = [
     500,
     1000,
     5000,
-    # 10000,
+    10000,
     # 50000,
     # 100000,
     # 500000,
@@ -61,7 +61,7 @@ for migration_rate in migration_rates:
     qmd_afs = afstools.expected_nisland_afs(samples = samples, 
     islands = islands, migration = migration_rate, deme = 1.0, omega = 1.25)
     print(f'qmd_afs: {qmd_afs}')
-    abs_err = []
+    average_abs_err = []
     rel_err = []
     i = 0
     while i < len(list_nsegsites):
@@ -76,20 +76,19 @@ for migration_rate in migration_rates:
             [f'observed_afs_M{migration_rate}_nsegsites{num_segsites}'] + ms_observed_afs
         )
 
-        abs_err.append(afstools.absolute_error(ms_observed_afs, qmd_afs))
+        average_abs_err.append(afstools.average_absolute_error(ms_observed_afs, qmd_afs))
         rel_err.append(afstools.relative_error(ms_observed_afs, qmd_afs))
-        print(abs_err)
+       
         i += 1
-    print(f'abs_err:{abs_err}')
     afs_distances += [
-        [f'abs.error_{migration_rate}']  + abs_err,
+        [f'average.abs.error_{migration_rate}']  + average_abs_err,
         [f'rel.error_{migration_rate}']  + rel_err,
     ]
     afs_table.append([f'expected_afs_M{migration_rate}'] + qmd_afs)
     print(f'afs_distances: {afs_distances}')
 afs_distances = afstools.transposed(afs_distances)
 afs_table = afstools.transposed(afs_table)
-output_afs_distances = os.path.join('csv-files', f'afs_errors_k={total_samples}_10i_sampling={sampling_type}.csv')
-output_afs_table = os.path.join('csv-files', f'afs_values_k={total_samples}_10i_sampling={sampling_type}.csv')
+output_afs_distances = os.path.join('csv-files', f'afs_errors_k={total_samples}_10i_sampling={sampling_type}_omega=1.25_theta=0.1.csv')
+output_afs_table = os.path.join('csv-files', f'afs_values_k={total_samples}_10i_sampling={sampling_type}_omega=1.25_theta=0.1.csv')
 afstools.write_csv(afs_table, output_afs_table, ',')
 afstools.write_csv(afs_distances, output_afs_distances,',')

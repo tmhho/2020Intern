@@ -4,15 +4,16 @@ import plotly.graph_objects as go
 import plotly.io as pio
 import os
 import sys
-
+import numpy as np
 # filenames = glob.glob('afs_errors_k=8_10i_sampling={}')
 # filenames.sort()
 total_sample = sys.argv[1]
 sampling_scheme = sys.argv[2]
 
-filename = os.path.join('csv-files','afs_errors_k={}_10i_sampling={}.csv'.format(total_sample,sampling_scheme))
-M = [0.05, 1.0, 10.0]
-# M = np.linspace(start=0.05, stop = 100.0, num = 5)
+filename = os.path.join('csv-files','afs_errors_k={}_10i_sampling={}_omega=1.25_theta=0.1.csv'.format(total_sample,sampling_scheme))
+# M = [0.05, 1.0, 10.0]
+M = np.linspace(start=0.05, stop = 100.0, num = 25)
+M = [M[0], M[1], M[12], M[24]]
 data = pd.read_csv(filename)
 
 
@@ -24,9 +25,9 @@ fig = go.Figure()
 for i in range(len(M)):
 	fig.add_trace(go.Scatter(
 		x=list(data['num_segsites']),
-		y = list(data['abs.error_{}'.format(M[i])]),
+		y = list(data[f'average.abs.error_{M[i]}']),
 		mode='lines+markers',
-		name='abs.error_{}'.format(M[i])))
+		name=f'average_abs.error_{M[i]}'))
    
 fig.update_layout(
 	title='Validation: nislands=10 k={} sampling_vector = {}'.format(total_sample,sampling_scheme),
