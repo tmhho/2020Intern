@@ -35,7 +35,7 @@ fig.update_layout(
 	yaxis_title='abs_error', 
 	xaxis_type='log',
 	yaxis_type='log')
-# fig.show()
+fig.show()
 
 ###############SAVE FIGURE######################################
 if not os.path.exists('graphs'):
