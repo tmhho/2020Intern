@@ -17,16 +17,27 @@ def sampling_scheme (total_samples, type):
     if type == 'spread':
         return [2]*int((total_samples//2))
 
-reps = [
+# reps = [
+#     500,
+#     1000,
+#     5000,
+#     10000,
+#     50000,
+#     100000,
+#     500000,
+#     1000000
+# ]
+list_nsegsites = [
     500,
     1000,
     5000,
-    10000,
-    50000,
-    100000,
-    500000,
-    1000000
+    # 10000,
+    # 50000,
+    # 100000,
+    # 500000,
+    # 1000000
 ]
+
 migration_rates = np.linspace(start=0.05, stop = 100.0, num = 25)
 total_samples = int(sys.argv[1])
 sampling_type = sys.argv[2]
@@ -44,9 +55,8 @@ afs_table = [
 ]
 
 samples = sampling_scheme(total_samples, sampling_type)
-
-        
-afs_distances= [['repetitions'] + reps]
+   
+afs_distances= [['num_segsites'] + list_nsegsites]
 for migration_rate in migration_rates:
     qmd_afs = afstools.expected_nisland_afs(samples = samples, 
     islands = islands, migration = migration_rate, deme = 1.0, omega = 1.25)
@@ -54,16 +64,16 @@ for migration_rate in migration_rates:
     abs_err = []
     rel_err = []
     i = 0
-    while i < len(reps):
+    while i < len(list_nsegsites):
 
-        nreps = reps[i]
-        
+        num_segsites = list_nsegsites[i]
+        nreps = 10* num_segsites
         ms_observed_afs = ms2afs.get_nisland_afs(islands= islands, migration = migration_rate,
-            samples =samples, theta = mutation_rate, repetitions = nreps, max_sites = 0, step = 1)
+            samples =samples, theta = mutation_rate, repetitions = nreps, max_sites = num_segsites, step = 1)
         ms_observed_afs = [ i/ sum(ms_observed_afs) for i in ms_observed_afs]
         print(f'ms_observed_afs{ms_observed_afs}')
         afs_table.append( 
-            [f'observed_afs_M{migration_rate}_nreps{nreps}'] + ms_observed_afs
+            [f'observed_afs_M{migration_rate}_nsegsites{num_segsites}'] + ms_observed_afs
         )
 
         abs_err.append(afstools.absolute_error(ms_observed_afs, qmd_afs))

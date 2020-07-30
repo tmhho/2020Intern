@@ -1,0 +1,13 @@
+qmd [k] [n] [M] [s] [s1 s2 s3 ... sn] [omega]
+
+ms [k] nreps -t 2 -I [n] [s1 s2 s3 ... sn] [M]
+
+k: number of samples
+n: number of islands
+M: global migration rate 
+s: deme size
+si: number of samples in island i
+
+omega: over-relaxation parameter
+default = 1.95
+range: (0; 2)
