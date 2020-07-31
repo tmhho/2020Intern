@@ -17,7 +17,8 @@ import os
 # for file in filenames :
 #     data.append([pd.read_csv(file)])
 sampling_type = sys.argv[1]
-filename = os.path.join('csv-files','afs_runtimes_n=10_w=1.25_sampling={}.csv'.format(sampling_type))
+mutation_rate = sys.argv[2]
+filename = os.path.join('csv-files',f'afs_runtimes_10i_w=1.25_sampling={sampling_type}_omega=1.25_theta={mutation_rate}.csv')
 data = pd.read_csv(filename)
 
 fig = go.Figure()
@@ -37,7 +38,7 @@ for i in range(len(M)):
                              name='qmd_runtime_M={}'.format(M[i])))
 
 fig.update_layout(
-    title='Performance, nreps = 500 000, 10 islands, sampling_type = {}'.format(sampling_type),
+    title=f'Performance, nsegsites = 500 000, 10 islands, sampling_type = {sampling_type}, theta = {mutation_rate}',
     xaxis_title='samples size',
     yaxis_title='runtime',
     yaxis_type='log' 
@@ -45,5 +46,5 @@ fig.update_layout(
 #fig.show()
 if not os.path.exists('graphs'):
     os.mkdir('graphs')
-path = os.path.join('graphs', 'Performance:nreps=500000_10i_sampling_type={}'.format(sampling_type))
+path = os.path.join(f'graphs', 'Performance_nsegsites=500000_10i_sampling_type={sampling_type}_theta={mutation_rate}')
 pio.write_image(fig , path, 'png')
