@@ -4,7 +4,7 @@ import time
 import sys
 import os
 
-nreps = 500000
+nsegsites = 500000
 k = [ 
     4,
     6,
@@ -12,7 +12,7 @@ k = [
     10,
     12,
     14,
-    # 16,
+    16,
     # 18
 ]
 
@@ -32,7 +32,7 @@ def sampling_scheme (total_samples, type):
     if type == 'spread':
         return [2]*int((total_samples//2))
 
-mutation_rate = 0.1
+mutation_rate = sys.argv[2]
 num_islands = 10
 deme_size = 1.0
 omega = 1.25
@@ -49,7 +49,7 @@ for migration_rate in migration_rates:
       # measure ms runtime
       start_time = time.time()
       ms_afs = ms2afs.get_nisland_afs(num_islands, migration_rate, sampling, 
-          mutation_rate, 10 * nreps, nreps)
+          mutation_rate, 10 * nsegsites, max_sites =nsegsites)
       runtime_ms.append(time.time() - start_time)
 
       # measure qmd runtime
@@ -63,5 +63,5 @@ for migration_rate in migration_rates:
 
 afs_runtimes = afstools.transposed(afs_runtimes)
 
-output_filename = os.path.join('csv-files', f'afs_runtimes_n={num_islands}_w={omega}_sampling={type_sampling}.csv')
+output_filename = os.path.join('csv-files', f'afs_runtimes_{num_islands}i_w={omega}_sampling={type_sampling}_omega=1.25_theta={mutation_rate}.csv')
 afstools.write_csv(afs_runtimes, output_filename, ',')
