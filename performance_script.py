@@ -18,7 +18,7 @@ k = [
 
 migration_rates = [0.1
 , 1.0
-, 10.0
+# , 10.0
 ]
 type_sampling = sys.argv[1]
 def sampling_scheme (total_samples, type):
