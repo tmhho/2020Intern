@@ -7,6 +7,10 @@ def read_csv(filename):
 def write_csv(table, filename, delimiter='\t'):
     csv.writer(open(filename, 'w', newline=''), delimiter=delimiter).writerows(table)
 
+def datetime_tag():
+	from time import strftime
+	return strftime("%y%m%d-%H%M%S")
+
 def transposed(table):
     return list(map(list, zip(*table)))    
 
