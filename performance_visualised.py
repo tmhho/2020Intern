@@ -22,7 +22,7 @@ filename = os.path.join('csv-files',f'afs_runtimes_10i_w=1.25_sampling={sampling
 data = pd.read_csv(filename)
 
 fig = go.Figure()
-M = [0.1,1.0,10.0]
+M = [0.1,1.0]
 color = ['firebrick','royalblue','orange', 'purple']
 for i in range(len(M)):
     fig.add_trace(go.Scatter(x=list(data['samples_size']),
@@ -46,5 +46,5 @@ fig.update_layout(
 #fig.show()
 if not os.path.exists('graphs'):
     os.mkdir('graphs')
-path = os.path.join(f'graphs', 'Performance_nsegsites=500000_10i_sampling_type={sampling_type}_theta={mutation_rate}')
+path = os.path.join(f'graphs', f'Performance_nsegsites=500000_10i_sampling_type={sampling_type}_theta={mutation_rate}.png')
 pio.write_image(fig , path, 'png')
