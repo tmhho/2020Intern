@@ -23,7 +23,8 @@ def _get_afs(ms_command, max_sites = 0, step = 1):
 		max_sites = float('inf')
 	
 	afs = [0] * (k - 1)
-	for line in afstools.execute(ms_command):
+	ms_output = afstools.execute(ms_command)
+	for line in ms_output:
 		if block_reading:
 			block_progress += 1
 			
@@ -54,7 +55,13 @@ def _get_afs(ms_command, max_sites = 0, step = 1):
 	if block_reading:
 		for site_count in site_counts:
 			afs[site_count - 1] += 1
-		
+
+	try:
+		while True:
+			next(ms_output)
+	except StopIteration:
+		pass	
+
 	return afs
 
 def get_panmictic_afs(samples, theta, repetitions, max_sites = 0, step = 1):

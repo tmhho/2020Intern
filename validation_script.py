@@ -6,39 +6,19 @@ import sys
 import afstools
 import numpy as np
 
-def sampling_scheme (total_samples, type):
-    if type == 'half-half':
-        if (total_samples//2) % 2 == 0:
-            return [total_samples//2]*2
-        else:
-            return [(total_samples//2)+1, (total_samples//2)-1]
-    if type == 'concentrated':
-        return [total_samples]
-    if type == 'spread':
-        return [2]*int((total_samples//2))
-
-# reps = [
-#     500,
-#     1000,
-#     5000,
-#     10000,
-#     50000,
-#     100000,
-#     500000,
-#     1000000
-# ]
 list_nsegsites = [
     500,
     1000,
     5000,
     10000,
     50000,
-    100000,
-    500000,
-    1000000
+    # 100000,
+    # 500000,
+    # 1000000
 ]
 
-migration_rates = np.linspace(start=0.05, stop = 100.0, num = 25)
+# migration_rates = np.linspace(start=0.05, stop = 100.0, num = 25)
+migration_rates = [0.1, 1, 10]
 total_samples = int(sys.argv[1])
 sampling_type = sys.argv[2]
 mutation_rate = 0.1
@@ -54,7 +34,7 @@ afs_table = [
     ['panmictic_afs'] + panmictic_afs
 ]
 
-samples = sampling_scheme(total_samples, sampling_type)
+samples = afstools.sampling_scheme(total_samples, sampling_type)
    
 afs_distances= [['num_segsites'] + list_nsegsites]
 for migration_rate in migration_rates:
@@ -70,7 +50,8 @@ for migration_rate in migration_rates:
         nreps = 10* num_segsites
         ms_observed_afs = ms2afs.get_nisland_afs(islands= islands, migration = migration_rate,
             samples =samples, theta = mutation_rate, repetitions = nreps, max_sites = num_segsites, step = 1)
-        ms_observed_afs = [ i/ sum(ms_observed_afs) for i in ms_observed_afs]
+        
+        ms_observed_afs = afstools.normalized(ms_observed_afs)[0]
         print(f'ms_observed_afs{ms_observed_afs}')
         afs_table.append( 
             [f'observed_afs_M{migration_rate}_nsegsites{num_segsites}'] + ms_observed_afs
