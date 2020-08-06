@@ -3,35 +3,21 @@ import ms2afs
 import time
 import sys
 import os
-
-nsegsites = 500000
+import numpy as np
+nsegsites = 50000
 k = [ 
     4,
     6,
     8,
     10,
     12,
-    14,
-    16,
+    # 14,
+    # 16,
     # 18
 ]
 
-migration_rates = [0.1
-, 1.0
-# , 10.0
-]
+migration_rates = np.logspace(start=-2, stop = 1, num = 3)
 type_sampling = sys.argv[1]
-def sampling_scheme (total_samples, type):
-    if type == 'half-half':
-        if (total_samples // 2)%2 == 0:
-            return [total_samples//2]*2
-        else:
-            return [total_samples//2+1, total_samples//2-1]
-    if type == 'concentrated':
-        return [total_samples]
-    if type == 'spread':
-        return [2]*int((total_samples//2))
-
 mutation_rate = sys.argv[2]
 num_islands = 10
 deme_size = 1.0
@@ -39,11 +25,12 @@ omega = 1.25
 
 
 afs_runtimes = [['samples_size']+k]
+
 for migration_rate in migration_rates:
   runtime_ms = []
   runtime_qmd = []
   for total_samples in k:
-      sampling = sampling_scheme(total_samples,type_sampling)
+      sampling = afstools.sampling_scheme(total_samples,type_sampling)[0]
       print('sampling:{}'.format(sampling))
 
       # measure ms runtime
@@ -62,6 +49,6 @@ for migration_rate in migration_rates:
   afs_runtimes.append([f'qmd_runtime_M{migration_rate}'] + runtime_qmd)
 
 afs_runtimes = afstools.transposed(afs_runtimes)
-
-output_filename = os.path.join('csv-files', f'afs_runtimes_{num_islands}i_w={omega}_sampling={type_sampling}_omega=1.25_theta={mutation_rate}.csv')
+datetime = afstools.datetime_tag()
+output_filename = os.path.join('csv-files', f'{datetime}_afs_runtimes_{num_islands}i_w={omega}_sampling={type_sampling}_omega=1.25_theta={mutation_rate}.csv')
 afstools.write_csv(afs_runtimes, output_filename, ',')
