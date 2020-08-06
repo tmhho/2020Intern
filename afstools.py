@@ -1,12 +1,23 @@
 import subprocess
+import json
 import csv
 
 def read_csv(filename):
     return csv.reader(open(filename, encoding='utf-8-sig'), delimiter = ',')
 
-def write_csv(table, filename, delimiter='\t'):
+def write_csv(table, filename, delimiter = '\t'):
     csv.writer(open(filename, 'w', newline=''), delimiter=delimiter).writerows(table)
 
+def read_json(filename):
+    with open(filename) as f:
+        output_dict = json.load(f)
+    
+    return output_dict
+
+def write_json(dictionary, filename):
+	with open(filename, 'w') as json_file:
+		json.dump(dictionary, json_file, indent = 4)
+    
 def datetime_tag():
 	from time import strftime
 	return strftime("%y%m%d-%H%M%S")
