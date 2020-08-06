@@ -44,7 +44,6 @@ for migration_rate in migration_rates:
     print(f'Migration rate {migration_rate} with qmd_afs: {qmd_afs}')
     afs_table.append([f'expected_afs_M{migration_rate}'] + qmd_afs)
 
-    
 
     for version in versions : 
         print('     starting version: ', version)
