@@ -4,6 +4,7 @@ import plotly.graph_objects as go
 import glob
 import sys
 import os
+import numpy as np
 # filenames = glob.glob('afs_runtimes_n*')
 # M = [float(name.split('_')[2].split('=')[1]) for name in filenames]
 
@@ -16,13 +17,18 @@ import os
 # data = []
 # for file in filenames :
 #     data.append([pd.read_csv(file)])
+
 sampling_type = sys.argv[1]
-mutation_rate = sys.argv[2]
-filename = os.path.join('csv-files',f'afs_runtimes_10i_w=1.25_sampling={sampling_type}_omega=1.25_theta={mutation_rate}.csv')
-data = pd.read_csv(filename)
+mutation_rate = 1.0
+num_islands = 10
+omega = 1.25
+theta =1.0 
+filename = os.path.join('csv-files',f'*_runtimes_{num_islands}i_sampling={sampling_type}_omega={omega}_theta={mutation_rate}.csv')
+file = glob.glob(filename)[0]
+data = pd.read_csv(file)
 
 fig = go.Figure()
-M = [0.1,1.0]
+M = np.logspace(start=-2, stop = 1, num = 3)
 color = ['firebrick','royalblue','orange', 'purple']
 for i in range(len(M)):
     fig.add_trace(go.Scatter(x=list(data['samples_size']),
@@ -46,5 +52,5 @@ fig.update_layout(
 #fig.show()
 if not os.path.exists('graphs'):
     os.mkdir('graphs')
-path = os.path.join(f'graphs', f'Performance_nsegsites=500000_10i_sampling_type={sampling_type}_theta={mutation_rate}.png')
+path = os.path.join(f'graphs', f'Performance_'+ file[10:-4] +'.png')
 pio.write_image(fig , path, 'png')

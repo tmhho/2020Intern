@@ -11,14 +11,15 @@ k = [
     8,
     10,
     12,
-    # 14,
-    # 16,
+    14,
+    16,
     # 18
 ]
 
 migration_rates = np.logspace(start=-2, stop = 1, num = 3)
 type_sampling = sys.argv[1]
-mutation_rate = sys.argv[2]
+mutation_rate = 1.0
+
 num_islands = 10
 deme_size = 1.0
 omega = 1.25
@@ -30,13 +31,13 @@ for migration_rate in migration_rates:
   runtime_ms = []
   runtime_qmd = []
   for total_samples in k:
-      sampling = afstools.sampling_scheme(total_samples,type_sampling)[0]
+      sampling = afstools.sampling_scheme(total_samples,type_sampling)
       print('sampling:{}'.format(sampling))
 
       # measure ms runtime
       start_time = time.time()
       ms_afs = ms2afs.get_nisland_afs(num_islands, migration_rate, sampling, 
-          mutation_rate, 10 * nsegsites, max_sites =nsegsites)
+          mutation_rate, 10 * nsegsites, max_sites =nsegsites, step = 100)
       runtime_ms.append(time.time() - start_time)
 
       # measure qmd runtime
@@ -50,5 +51,5 @@ for migration_rate in migration_rates:
 
 afs_runtimes = afstools.transposed(afs_runtimes)
 datetime = afstools.datetime_tag()
-output_filename = os.path.join('csv-files', f'{datetime}_afs_runtimes_{num_islands}i_w={omega}_sampling={type_sampling}_omega=1.25_theta={mutation_rate}.csv')
+output_filename = os.path.join('csv-files', f'{datetime}_runtimes_{num_islands}i_sampling={type_sampling}_omega={omega}_theta={mutation_rate}.csv')
 afstools.write_csv(afs_runtimes, output_filename, ',')
