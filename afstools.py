@@ -71,7 +71,7 @@ def expected_nisland_afs(samples, islands, migration, deme = 1.0, omega = 1.25):
     afs = [float(x) for x in line.split(',')]
     return afs
 
-def sampling_scheme (total_samples, type):
+def sampling_scheme(total_samples, type, islands = 0):
     if total_samples % 2 != 0:
         raise 'Error: not an even number of samples'
 
@@ -83,6 +83,18 @@ def sampling_scheme (total_samples, type):
         return [total_samples]
 
     if type == 'spread':
-        return [2] * int(total_samples / 2)
+        if islands == 0:
+            return [2] * (total_samples // 2)
+        else:
+            sv = [0] * min(islands, total_samples // 2)
+            i = 0
+            for _ in range(total_samples // 2):
+                sv[i] += 2
+                if i == len(sv) - 1:
+                    i = 0
+                else:
+                    i += 1
+            
+            return sv
     
     raise f'Error: type argument not recognized: {type}'
