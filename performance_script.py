@@ -66,5 +66,5 @@ afs_settings={
   "omega" : omega,
   "list of total samples" : k
 }
-name_afs_settings = os.path.joint(result_dir, basename + 'settings.json')
+name_afs_settings = os.path.join(result_dir, basename + 'settings.json')
 afstools.write_json(afs_settings, name_afs_settings)
