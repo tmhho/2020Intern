@@ -17,10 +17,10 @@ k = [
 ]
 
 migration_rates = np.logspace(start=-2, stop = 1, num = 3)
-type_sampling = sys.argv[1]
+type_sampling = sys.argv[2]
 mutation_rate = 1.0
 
-num_islands = 10
+num_islands = int(sys.argv[1])
 deme_size = 1.0
 omega = 1.25
 
