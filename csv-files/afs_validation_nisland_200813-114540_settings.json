@@ -1,0 +1,14 @@
+{
+    "basename": "afs_validation_nisland_200813-114540_",
+    "distances filename": "csv-files/afs_validation_nisland_200813-114540_distances.csv",
+    "raw data filename": "csv-files/afs_validation_nisland_200813-114540_raw.csv",
+    "segsites": [
+        100000
+    ],
+    "total samples": 4,
+    "sampling type": "spread",
+    "number of islands": 15,
+    "migration rates": [0.1, 0.21544346900318834, 0.46415888336127786, 1.0, 2.1544346900318834, 4.6415888336127775, 10.0, 21.54434690031882, 46.41588833612777, 100.0]
+}
+
+

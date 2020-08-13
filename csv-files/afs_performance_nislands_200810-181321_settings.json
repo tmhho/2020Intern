@@ -1,0 +1,23 @@
+{
+    "basename": "afs_performance_nislands_200810-181321_",
+    "runtime filename": "csv-files/afs_performance_nislands_200810-181321_.csv",
+    "number of segsites": 50000,
+    "sampling type": "spread",
+    "number of islands": 15,
+    "migration rates": [
+        0.1,
+        1.0,
+        10.0
+    ],
+    "theta": 1.0,
+    "omega": 1.25,
+    "list of total samples": [
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16
+    ]
+}

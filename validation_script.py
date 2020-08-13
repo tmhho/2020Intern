@@ -8,12 +8,12 @@ import numpy as np
 import afstools
 
 list_nsegsites = [
-    500,
-    1000,
-    5000,
+    # 500,
+    # 1000,
+    # 5000,
     # 10000,
     # 50000,
-    # 100000,
+    100000,
     # 500000,
     # 1000000
 ]
@@ -24,9 +24,9 @@ total_samples = int(sys.argv[1])
 sampling_type = sys.argv[2]
 islands = int(sys.argv[3])
 
-migration_rates = [0.1, 1, 10]
+migration_rates =  list(np.logspace(start=-1, stop=2, num=10))
 mutation_rate = 1
-versions = 3
+versions = 1
 omega = 1.25
 
 samples = afstools.sampling_scheme(total_samples, sampling_type)

@@ -2,20 +2,21 @@ import plotly.graph_objects as go
 import pandas as pd
 import glob
 import sys
-import plotly.io as pio
 import os
+import plotly.io as pio
 import numpy as np
+import afstools 
 
-total_samples = int(sys.argv[1])
-sampling_scheme = sys.argv[2]
-filename = os.path.join('csv-files','*_values_k={}_10i_sampling={}_omega=1.25_theta=0.1.csv'.format(total_samples,sampling_scheme))
-file = glob.glob(filename)[0]
 
-#!!! SAME list_M as validation_script.py 
+settings_filename = sys.argv[1]
+settings_filename = os.path.join('csv-files',settings_filename)
+settings = afstools.read_json(settings_filename)
+total_samples = settings["total samples"]
+sampling_scheme = settings["sampling type"]
+islands = settings['number of islands']
+migration_rates = settings["migration rates"]
 
-migration_rates = np.logspace(start=-2, stop = 1, num = 10)
-
-data = pd.read_csv(file)
+data = pd.read_csv(settings["raw data filename"])
 
 list_c=[]
 
@@ -37,10 +38,10 @@ for i in range(len(list_c)):
 ))
 
 
-fig.update_layout(title='Afs, k={}, nislands=10, sampling_scheme={}'.format(total_samples,sampling_scheme), xaxis_type='log', xaxis_title='M')
+fig.update_layout(title=f'Afs, k={total_samples}, nislands={islands}, sampling_scheme={sampling_scheme}'.format(total_samples,sampling_scheme), xaxis_type='log', xaxis_title='M')
 if not os.path.exists('graphs'):
     os.mkdir('graphs')
-path = os.path.join('graphs', 'Area_Chart_'+file[10:-4]+'.png')
-pio.write_image(fig , path, 'png')
+path_png = os.path.join('graphs',settings['basename']+ 'area_chart.png')
+pio.write_image(fig , path_png, 'png')
 
 # fig.show()

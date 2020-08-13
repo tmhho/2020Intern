@@ -17,7 +17,7 @@ segsites = settings["number of segsites"]
 data = pd.read_csv(filename)
 
 fig = go.Figure()
-M = np.logspace(start=-2, stop = 1, num = 3)
+M = settings["migration rates"]
 color = ['firebrick','royalblue','orange', 'purple']
 for i in range(len(M)):
     fig.add_trace(go.Scatter(x=list(data['samples_size']),
