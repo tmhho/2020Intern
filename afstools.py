@@ -98,3 +98,34 @@ def sampling_scheme(total_samples, type, islands = 0):
             return sv
     
     raise f'Error: type argument not recognized: {type}'
+
+def visualize_afs(afs, namefile, nameline, fig, show = False ,save =False): 
+	import plotly.graph_objects as go
+	import plotly.io as pio
+	import os
+	# fig=go.Figure()
+	fig.add_trace(go.Scatter(
+    x=list(range(1, len(afs)+1)), y = afs,
+    mode='lines+markers',
+    line=dict(width=0.5),
+    name = nameline))
+	if show :
+		fig.show()
+	if save :
+		path_png = os.path.join('graphs',namefile +'_'+ datetime_tag() +'.png')
+		pio.write_image(fig , path_png, 'png')
+	return fig
+
+
+
+def rescaled(original_afs, len_rescaled_afs):
+
+	i = 0
+	k = len(afs)//len_x
+	while i <= len(afs) - k:
+		average = sum(afs[i:i+k])/k
+		new_afs.append(average)
+		i += k 
+	if i < len(afs):
+		new_afs.append(sum(afs[i:len(afs)]/len(afs[i:len(afs)])))
+
