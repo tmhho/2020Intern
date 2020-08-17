@@ -118,14 +118,35 @@ def visualize_afs(afs, namefile, nameline, fig, show = False ,save =False):
 
 
 
-def rescaled(original_afs, len_rescaled_afs):
-
+def subsample(original_afs, subsample_size):
+	from math import floor
+	k = (10 * len(original_afs))/subsample_size 
+	# print('k   ', k)
+	list_rest = [10]*len(original_afs)
+	afs_out = [] 
 	i = 0
-	k = len(afs)//len_x
-	while i <= len(afs) - k:
-		average = sum(afs[i:i+k])/k
-		new_afs.append(average)
-		i += k 
-	if i < len(afs):
-		new_afs.append(sum(afs[i:len(afs)]/len(afs[i:len(afs)])))
+	while len(afs_out) < subsample_size:
+		value = 0
+		used = 0
+		step = 0
+		# print('we are at i : ', i)
+		while used < k:
+			if k - used >= list_rest[i]:
+				value += list_rest[i]*original_afs[i]/10.0
+				used += list_rest[i]
+				step = list_rest[i]	
+				list_rest[i] = 0
+				i += 1
+			else :
+				value += (k - used)*original_afs[i]/10.0
+				step = k - used
+				list_rest[i] =  list_rest[i] - step
 
+				used = k   
+			# print('step used: ', step)
+			# print(list_rest)	
+		afs_out.append(value)
+
+		# print('afs out is: ', afs_out)
+		
+	return afs_out
