@@ -141,7 +141,6 @@ def subsample(original_afs, subsample_size):
 				value += (k - used)*original_afs[i]/10.0
 				step = k - used
 				list_rest[i] =  list_rest[i] - step
-
 				used = k   
 			# print('step used: ', step)
 			# print(list_rest)	
@@ -149,4 +148,16 @@ def subsample(original_afs, subsample_size):
 
 		# print('afs out is: ', afs_out)
 		
+	return afs_out
+
+
+def fold(original_afs):
+	afs_out = []
+	l = len(original_afs)
+	i = 0
+	while i < l//2:
+		afs_out.append(original_afs[i]+original_afs[l-i-1])
+		i += 1
+	if l % 2 == 1:
+		afs_out.append(original_afs[l//2])
 	return afs_out
