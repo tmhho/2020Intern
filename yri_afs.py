@@ -2,31 +2,51 @@ from numpy import loadtxt
 import plotly.graph_objects as go
 import afstools 
 import sys
+import ms2afs
 
 lines = loadtxt("FoldSFS_YRI.txt", delimiter ="\t", unpack = False)
 afs = [line[1] for line in lines]
 i = 0
-len_x = 9
-k = round(len(afs)/len_x)
-new_afs = []
-while i <= len(afs) - k:
-	average = sum(afs[i:i+k])/round(k)
-	new_afs.append(average)
-	i += k 
-if i < len(afs):
-	new_afs.append(sum(afs[i:len(afs)])/len(afs[i:len(afs)]))
+subsampled_yri_afs = afstools.subsample(afs,6)
+yri_afs = afstools.normalized(subsampled_yri_afs)[0]
 
-new_afs = afstools.normalized(new_afs)[0]
 fig=go.Figure()
-fig = afstools.visualize_afs(afs= new_afs, namefile='yri_afs_rescaled',fig=fig, nameline = 'yri_afs_rescaled')
-fig = afstools.visualize_afs(afs= afstools.expected_panmictic_afs(10), namefile='yri_afs_rescaled',fig=fig, nameline = 'panmictic_afs')
+fig = afstools.visualize_afs(afs= yri_afs, namefile='yri_afs',fig=fig, nameline = 'yri_afs')
+
+expected_panmictic_afs = afstools.expected_panmictic_afs(12)
+folded_expected_panmictic_afs = afstools.fold(expected_panmictic_afs)
+fig = afstools.visualize_afs(afs= folded_expected_panmictic_afs, namefile='yri_afs',fig=fig, nameline = 'panmictic_afs')
 
 islands = int(sys.argv[1])
 migration = float(sys.argv[2])
 sampling_type = sys.argv[3]
 deme = float(sys.argv[4])
-samples = afstools.sampling_scheme(total_samples = 10, type = sampling_type)
-print(samples)
-print(type(samples))
-expected_nislands_afs = afstools.expected_nisland_afs(samples = samples, islands = islands, migration = migration , deme = deme, omega = 1.25)
-fig = afstools.visualize_afs(show=True,save=True, afs= expected_nislands_afs, namefile='yri_nislands_afs',fig=fig, nameline = f'nislands_afs_{sampling_type}_{islands}i_M{migration}_deme{deme}')
+samples = afstools.sampling_scheme(total_samples = 12, type = sampling_type)
+
+qmd_nislands_afs = afstools.expected_nisland_afs(samples = samples, islands = islands, migration = migration , deme = deme, omega = 1.25)
+folded_qmd_afs = afstools.fold(qmd_nislands_afs)
+fig = afstools.visualize_afs(show=False,save=False, 
+	afs= folded_qmd_afs, 
+	namefile='yri_nislands_afs',
+	fig=fig, 
+	nameline = f'qmd_nislands_afs_{sampling_type}_{islands}i_M{migration}_deme{deme}')
+
+num_segsites = 50000
+nreps = 10*num_segsites
+mutation_rate = 0.1
+ms_nislands_afs = ms2afs.get_nisland_afs(
+                islands = islands, 
+                migration = migration,
+                samples = samples, 
+                theta = mutation_rate, 
+                repetitions = nreps, 
+                max_sites = num_segsites, 
+                step = 100
+            )
+ms_nislands_afs = afstools.normalized(ms_nislands_afs)[0]
+folded_ms_afs = afstools.fold(ms_nislands_afs)
+fig = afstools.visualize_afs(show=True,save=True, 
+	afs= folded_ms_afs, 
+	namefile='yri_nislands_afs',
+	fig=fig, 
+	nameline = f'ms_nislands_afs_{sampling_type}_{islands}i_M{migration}_{num_segsites}segsites_theta{mutation_rate}')
