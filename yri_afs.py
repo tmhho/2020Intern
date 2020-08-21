@@ -31,7 +31,7 @@ migration_rates = ['0.1'
 # ,'10.0'
 ]
 
-data = {'model': 'Nislands-model with population size increased in all islands'} 
 afs = afstools.simulated_nislands_size_inscreased_all_islands(num_islands=num_islands, list_T =list_T, list_x = list_x,migration_rates = migration_rates, nreps = '30000')
+
 print(afs.keys())
 
