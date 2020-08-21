@@ -1,6 +1,7 @@
 import subprocess
 import json
 import csv
+import ms2afs
 
 def read_csv(filename):
     return csv.reader(open(filename, encoding='utf-8-sig'), delimiter = ',')
@@ -17,6 +18,11 @@ def read_json(filename):
 def write_json(dictionary, filename):
 	with open(filename, 'w') as json_file:
 		json.dump(dictionary, json_file, indent = 4)
+
+def append_json(dictionary,filename):
+	data = read_json(filename)
+	data.update(dictionary)
+	write_json(data, filename)
     
 def datetime_tag():
 	from time import strftime
@@ -99,7 +105,7 @@ def sampling_scheme(total_samples, type, islands = 0):
     
     raise f'Error: type argument not recognized: {type}'
 
-def visualize_afs(afs, namefile, nameline, fig, show = False ,save =False): 
+def visualize_afs(afs, namefile, nameline, fig, show = False ,save =False, has_title=False, title=None): 
 	import plotly.graph_objects as go
 	import plotly.io as pio
 	import os
@@ -109,13 +115,15 @@ def visualize_afs(afs, namefile, nameline, fig, show = False ,save =False):
     mode='lines+markers',
     line=dict(width=0.5),
     name = nameline))
+	if has_title :
+		fig.update_layout(title=title)
 	if show :
 		fig.show()
 	if save :
-		path_png = os.path.join('graphs',namefile +'_'+ datetime_tag() +'.png')
+		path_png = os.path.join('graphs',namefile +'_'+ afstools.datetime_tag() +'.png')
 		pio.write_image(fig , path_png, 'png')
-	return fig
 
+	return fig
 
 
 def subsample(original_afs, subsample_size):
@@ -161,3 +169,56 @@ def fold(original_afs):
 	if l % 2 == 1:
 		afs_out.append(original_afs[l//2])
 	return afs_out
+
+def graphical_transform(original_afs): 
+	afs_out = []
+	n = len(original_afs)
+	for i in range(1,n+1):
+		afs_out.append((original_afs[i-1]*i*(2*n-i))/(2*n))
+	return afs_out
+
+
+# type of input is list of string
+def simulated_nislands_size_inscreased_all_islands(num_islands:list, migration_rates:list, list_T:list, list_x:list, nreps:str) -> dict:
+	data = {'model': 'Nislands-model with population size increased in all islands'} 
+	for islands in num_islands:
+		for T in list_T:
+			for x in list_x:
+				for M in migration_rates:
+					ms_command = ['./ms', '216',nreps, '-t', '0.1','-I']
+					samples = sampling_scheme(total_samples=216, type='concentrated')
+					samples.extend([0] * (int(islands) - len(samples)))
+					samples=[str(n) for n in samples]
+					ms_command.extend([islands])
+					ms_command.extend (samples)
+					ms_command.extend([ M, '-eN', T, x])
+					# print(ms_command)
+					afs = ms2afs._get_afs(ms_command, max_sites = 2000000, step = 1)
+					# afs = fold(afs)
+					data[f'{islands}islands_{T}T_{x}x_{M}M'] = afs
+	return data
+# type of input is list of string
+def simulated_nislands_size_inscreased_isolated_one_island(num_islands:list, migration_rates:list, list_T:list, list_x:list, nreps:str) -> dict:
+	data2={'model': 'Nislands-model with population size increased in one island and its partial isolation' }
+	for T in list_T:
+		for x in list_x:
+			for M in migration_rates:
+				Tij = []
+				for islands in num_islands:
+					ms_command = ['./ms', '216','30000', '-t', '0.1','-I']
+					samples = sampling_scheme(total_samples=216, type='concentrated')
+					samples.extend([0] * (int(islands) - len(samples)))	
+					samples=[str(n) for n in samples]
+					ms_command.extend([islands])
+					ms_command.extend (samples)
+					ms_command.extend([M, '-en',T,'1',x])
+					i_j_migration_rate = str(float(M)*float(x))
+					for j in range(2, int(islands)+1):
+						Tij.extend(['-em','T','1',str(j), i_j_migration_rate])
+						Tij.extend(['-em','T',str(j),'1', i_j_migration_rate])
+					ms_command += Tij
+					print(ms_command)
+					afs = ms2afs._get_afs(ms_command, max_sites = 200000, step = 1)
+					# afs = fold(afs)
+					data2[f'{islands}islands_{T}T_{x}x_{M}M'] = afs
+	return afs
