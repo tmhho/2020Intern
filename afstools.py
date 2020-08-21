@@ -194,7 +194,7 @@ def simulated_nislands_size_inscreased_all_islands(num_islands:list, migration_r
 					ms_command.extend([ M, '-eN', T, x])
 					# print(ms_command)
 					afs = ms2afs._get_afs(ms_command, max_sites = 2000000, step = 1)
-					# afs = fold(afs)
+					afs = fold(afs)
 					data[f'{islands}islands_{T}T_{x}x_{M}M'] = afs
 	return data
 # type of input is list of string
@@ -219,6 +219,6 @@ def simulated_nislands_size_inscreased_isolated_one_island(num_islands:list, mig
 					ms_command += Tij
 					print(ms_command)
 					afs = ms2afs._get_afs(ms_command, max_sites = 200000, step = 1)
-					# afs = fold(afs)
+					afs = fold(afs)
 					data2[f'{islands}islands_{T}T_{x}x_{M}M'] = afs
 	return afs
