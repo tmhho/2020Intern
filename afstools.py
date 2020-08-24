@@ -179,7 +179,8 @@ def graphical_transform(original_afs):
 
 
 # type of input is list of string
-def simulated_nislands_size_inscreased_all_islands(num_islands:list, migration_rates:list, list_T:list, list_x:list, nreps:str) -> dict:
+def simulated_nislands_size_inscreased_all_islands(yri_afs : list,num_islands:list, migration_rates:list, list_T:list, list_x:list, nreps:str) -> dict:
+	import os
 	data = {'model': 'Nislands-model with population size increased in all islands'} 
 	for islands in num_islands:
 		for T in list_T:
@@ -192,10 +193,15 @@ def simulated_nislands_size_inscreased_all_islands(num_islands:list, migration_r
 					ms_command.extend([islands])
 					ms_command.extend (samples)
 					ms_command.extend([ M, '-eN', T, x])
-					# print(ms_command)
-					afs = ms2afs._get_afs(ms_command, max_sites = 2000000, step = 1)
+					print(ms_command)
+					afs = ms2afs._get_afs(ms_command, max_sites = 20000000, step = 1)
+					afs = normalized(afs)[0]
 					afs = fold(afs)
 					data[f'{islands}islands_{T}T_{x}x_{M}M'] = afs
+					filename = os.path.join('json-files', 'yri-afs_' + datetime_tag() + '_values.json')
+					write_json(data,filename)
+					distance = {'average_absolute_error': average_absolute_error(yri_afs,afs)}
+					append_json(distance,filename)
 	return data
 # type of input is list of string
 def simulated_nislands_size_inscreased_isolated_one_island(num_islands:list, migration_rates:list, list_T:list, list_x:list, nreps:str) -> dict:
@@ -219,6 +225,7 @@ def simulated_nislands_size_inscreased_isolated_one_island(num_islands:list, mig
 					ms_command += Tij
 					print(ms_command)
 					afs = ms2afs._get_afs(ms_command, max_sites = 200000, step = 1)
+					afs = normalized(afs)[0]
 					afs = fold(afs)
 					data2[f'{islands}islands_{T}T_{x}x_{M}M'] = afs
-	return afs
+	return data2
