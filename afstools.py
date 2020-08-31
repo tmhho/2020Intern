@@ -183,8 +183,10 @@ def simulated_nislands_size_inscreased_all_islands(yri_afs : list,num_islands:li
 	import os
 	data = {'model': 'Nislands-model with population size increased in all islands'} 
 	for islands in num_islands:
-		for T in list_T:
+		for T in list_T: 
 			for x in list_x:
+				if T == '5' and islands != '10':
+					continue	
 				for M in migration_rates:
 					ms_command = ['./ms', '216',nreps, '-t', '0.1','-I']
 					samples = sampling_scheme(total_samples=216, type='concentrated')
@@ -200,8 +202,6 @@ def simulated_nislands_size_inscreased_all_islands(yri_afs : list,num_islands:li
 					data[f'{islands}islands_{T}T_{x}x_{M}M'] = afs
 					filename = os.path.join('json-files', 'yri-afs_' + datetime_tag() + '_values.json')
 					write_json(data,filename)
-					distance = {'average_absolute_error': average_absolute_error(yri_afs,afs)}
-					append_json(distance,filename)
 	return data
 # type of input is list of string
 def simulated_nislands_size_inscreased_isolated_one_island(num_islands:list, migration_rates:list, list_T:list, list_x:list, nreps:str) -> dict:

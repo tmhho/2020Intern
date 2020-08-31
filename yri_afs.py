@@ -15,21 +15,25 @@ yri_afs = afstools.normalized(afs)[0]
 # fig = afstools.visualize_afs(afs= graphically_transformed_yri_afs, namefile = 'yri_afs',fig = fig, nameline = 'yri_afs')
 
 
-num_islands = ['5'
-, '10' 
-,'20'
+num_islands = [
+# '5',
+'10', 
+'20'
 ]
-list_T =['1'
-,'5'
+list_T =[
+# '1',
+'5'
 ,'10'
 ]
-list_x = ['0.1'
-, '0.01'
-, '0.5'
+list_x = [
+'0.01'
+ # ,'0.1'
+# , '0.5'
 ]
-migration_rates = ['0.1'
-,'1.0'
-,'10.0'
+migration_rates = [
+# '0.1',
+'1.0'
+# ,'10.0'
 ]
 
 data = afstools.simulated_nislands_size_inscreased_all_islands(yri_afs = yri_afs, num_islands=num_islands, list_T =list_T, list_x = list_x,migration_rates = migration_rates, nreps = '30000000')
